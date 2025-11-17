@@ -1,3 +1,7 @@
 # dependencies
 **/node_modules
 **/trash
+
+public/
+generated/
+images/
