@@ -24,16 +24,16 @@ export const LANGUAGES_URL = [
         folder: "en",
         url: getLanguageUrl("english"),
     },
-    {
-        language: "schinese",
-        folder: "zh-CN",
-        url: getLanguageUrl("schinese"),
-    },
     // {
-    //     language: "portuguese (Brazil)",
-    //     folder: "pt-BR",
-    //     url: getLanguageUrl("brazilian"),
+    //     language: "schinese",
+    //     folder: "zh-CN",
+    //     url: getLanguageUrl("schinese"),
     // },
+    {
+        language: "portuguese (Brazil)",
+        folder: "pt-BR",
+        url: getLanguageUrl("brazilian"),
+    },
     // {
     //     language: "russian",
     //     folder: "ru",

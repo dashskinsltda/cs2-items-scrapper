@@ -2,6 +2,7 @@
   "type": "module",
   "dependencies": {
     "axios": "^1.13.2",
+    "date-fns": "^4.1.0",
     "sha1": "^1.1.1"
   },
   "devDependencies": {
@@ -12,6 +13,7 @@
     "group-data": "node group.js",
     "update-data-force": "node update.js --force",
     "group-data-force": "node group.js --force",
-    "format": "prettier --write \"**/*.js\" --ignore-path .gitignore"
+    "format": "prettier --write \"**/*.js\" --ignore-path .gitignore",
+    "merge-data": "node merge.js"
   }
 }
