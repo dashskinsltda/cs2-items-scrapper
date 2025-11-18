@@ -553,15 +553,15 @@ const downloadImage = async (url, outputPath) => {
 };
 
 // ---------------- PROCESS IMAGES ----------------
-const processImages = async images => {
+const processImages = async (images, outputPath = "/images/items") => {
     for (const [index, url] of Object.entries(images)) {
         // extract filename from URL
         const fileName = path.basename(new URL(url).pathname).replace("_png.png", ".png");
-        const filePath = path.join(__dirname + "/images/items", fileName);
+        const filePath = path.join(__dirname + outputPath, fileName);
 
         try {
-            if (!fs.existsSync(__dirname + "/images/items")) {
-                fs.mkdirSync(__dirname + "/images/items", { recursive: true });
+            if (!fs.existsSync(__dirname + outputPath)) {
+                fs.mkdirSync(__dirname + outputPath, { recursive: true });
             }
 
             console.log(`⬇️ Downloading ${+index + 1} of ${images.length}:`, fileName);
@@ -602,7 +602,7 @@ const allItems = merge([
 // because of this images are not shown correctly on filters images
 // to fix this we need to download all the GitHub images and serve them
 // to the client the using Next.js public folder
-const imagesToProcess = [];
+let imagesToProcess = [];
 
 for (const [key, items] of Object.entries(allItems)) {
     items.forEach((item, index) => {
@@ -615,6 +615,8 @@ for (const [key, items] of Object.entries(allItems)) {
 }
 
 await processImages(imagesToProcess);
+
+imagesToProcess = [];
 
 fs.writeFileSync(`${GENERATED_FILES_DIR}/all.json`, JSON.stringify(allItems));
 
@@ -638,6 +640,14 @@ import { ESet } from '@/types/Item';\n
 const COLLECTIONS: Collection[] = [\n`;
 
 mergeCollections().forEach(({ id, name, image }) => {
+    let parsedImage = image;
+
+    if (image.startsWith("https://raw.githubusercontent.com/ByMykel/")) {
+        imagesToProcess.push(image);
+        const fileName = path.basename(new URL(image).pathname).replace("_png.png", ".png");
+        parsedImage = `/images/collections/${fileName}`;
+    }
+
     collections += `  {
     id: ESet.${id.toUpperCase().replaceAll("-", "_")},
     name: {
@@ -645,12 +655,14 @@ mergeCollections().forEach(({ id, name, image }) => {
       en: '${name.en}'
     },
     image:
-      '${image}'
+      '${parsedImage}'
   },\n`;
 });
 
 collections += `]\n
 export default COLLECTIONS;\n`;
+
+await processImages(imagesToProcess, "/images/collections");
 
 fs.writeFileSync(`${GENERATED_FILES_DIR}/collections.ts`, collections);
 
